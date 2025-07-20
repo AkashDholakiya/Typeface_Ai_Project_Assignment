@@ -11,8 +11,6 @@ A comprehensive personal finance management application that helps users track e
 - [Usage](#-usage)
 - [API Documentation](#-api-documentation)
 - [Project Structure](#-project-structure)
-- [Contributing](#-contributing)
-- [License](#-license)
 
 ## ✨ Features
 
