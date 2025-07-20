@@ -15,7 +15,6 @@ import UploadReceiptPage from './pages/UploadReceiptPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
 
-// Layout component
 const Layout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -46,11 +45,9 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
-// App content component
 const AppContent = () => {
   const dispatch = useDispatch();
   const { token, isAuthenticated } = useSelector(state => state.auth);
-
   useEffect(() => {
     // Check if user is authenticated on app load
     if (token && !isAuthenticated) {
