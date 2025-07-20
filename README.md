@@ -129,8 +129,8 @@ A comprehensive personal finance management application that helps users track e
 - `POST /api/auth/login` - Login an existing user
 - `GET /api/auth/me` - Get current user profile
 - `PUT /api/auth/profile` - Login an existing user
-- `POST /api/auth/check-password` - Login an existing user
-- `DELETE /api/auth/delete-account` - Login an existing user
+- `POST /api/auth/check-password` - check user password is correct or not
+- `DELETE /api/auth/delete-account` - delete user account along with data
 
 ### Transaction Endpoints
 - `GET /api/transactions` - Get user transactions with filtering/pagination
