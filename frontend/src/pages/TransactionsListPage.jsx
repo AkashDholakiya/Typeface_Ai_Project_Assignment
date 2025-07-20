@@ -26,7 +26,8 @@ const TransactionsListPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { transactions, loading, pagination } = useSelector(state => state.transactions);
-    const { categories } = useSelector(state => state.categories);    const [filters, setFilters] = useState({
+    const { categories } = useSelector(state => state.categories);    
+    const [filters, setFilters] = useState({
         search: '',
         type: 'all',
         category: 'all',
@@ -40,7 +41,9 @@ const TransactionsListPage = () => {
     // Fetch categories on mount
     useEffect(() => {
         dispatch(fetchCategories());
-    }, [dispatch]);    // Debounce search input
+    }, [dispatch]);    
+    
+    // Debounce search input
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             setDebouncedSearch(filters.search);
@@ -48,7 +51,9 @@ const TransactionsListPage = () => {
         }, 500);
 
         return () => clearTimeout(timeoutId);
-    }, [filters.search]);// Fetch transactions when filters change
+    }, [filters.search]);
+    
+    // Fetch transactions when filters change
     useEffect(() => {
         const query = {
             limit: 20,
@@ -71,7 +76,9 @@ const TransactionsListPage = () => {
 
         console.log('Fetching transactions with query:', query);
         dispatch(fetchTransactions(query));
-    }, [dispatch, debouncedSearch, filters.type, filters.category, filters.sortBy, filters.sortOrder, currentPage]);    // Function to refresh transactions (for delete)
+    }, [dispatch, debouncedSearch, filters.type, filters.category, filters.sortBy, filters.sortOrder, currentPage]);    
+    
+    // Function to refresh transactions (for delete)
     const refreshTransactions = () => {
         const query = {
             limit: 20,
@@ -90,7 +97,8 @@ const TransactionsListPage = () => {
 
         if (filters.category !== 'all') {
             query.category = filters.category;
-        }        console.log('Refreshing transactions with query:', query);
+        }        
+        console.log('Refreshing transactions with query:', query);
         dispatch(fetchTransactions(query));
     };
 
@@ -410,7 +418,8 @@ const TransactionsListPage = () => {
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
-                                            </div>                                        </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

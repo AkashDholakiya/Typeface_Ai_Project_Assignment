@@ -38,37 +38,40 @@ const AnalyticsPage = () => {
     const navigate = useNavigate();
     const { stats, loading } = useSelector(state => state.transactions);
 
-    const [selectedPeriod, setSelectedPeriod] = useState('month');
-    const [viewType, setViewType] = useState('overview');    useEffect(() => {
-        console.log('Fetching stats for period:', selectedPeriod);
+    const [selectedPeriod, setSelectedPeriod] = useState('all');
+    const [viewType, setViewType] = useState('overview');    
+    
+    useEffect(() => {
         
-        // Calculate date range based on selected period
         const now = new Date();
-        let startDate, endDate;        switch (selectedPeriod) {
+        let startDate, endDate;        
+        switch (selectedPeriod) {        
             case 'week': {
                 // This week (Monday to Sunday)
                 const startOfWeek = new Date(now);
-                startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Monday
+                const day = startOfWeek.getDay();
+                const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
+                
+                startOfWeek.setDate(diff);
                 startOfWeek.setHours(0, 0, 0, 0);
                 
                 const endOfWeek = new Date(startOfWeek);
-                endOfWeek.setDate(startOfWeek.getDate() + 6); // Sunday
+                endOfWeek.setDate(startOfWeek.getDate() + 6); // 6 days later
                 endOfWeek.setHours(23, 59, 59, 999);
                 
                 startDate = startOfWeek.toISOString();
                 endDate = endOfWeek.toISOString();
+                
                 break;
             }
                 
             case 'month': {
-                // This month
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
                 endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
                 break;
             }
                 
             case 'quarter': {
-                // This quarter
                 const quarter = Math.floor(now.getMonth() / 3);
                 startDate = new Date(now.getFullYear(), quarter * 3, 1).toISOString();
                 endDate = new Date(now.getFullYear(), quarter * 3 + 3, 0, 23, 59, 59, 999).toISOString();
@@ -76,25 +79,22 @@ const AnalyticsPage = () => {
             }
                 
             case 'year': {
-                // This year
                 startDate = new Date(now.getFullYear(), 0, 1).toISOString();
                 endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999).toISOString();
                 break;
             }
-              case 'all': {
-                // All time - no date filtering, will show all historical data
+            case 'all': {
                 startDate = null;
                 endDate = null;
                 break;
             }
                 
             default: {
-                // Default to this month
-                startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-                endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
+                startDate = null;
+                endDate = null;
             }
         }
-          console.log('Date range:', { startDate, endDate, period: selectedPeriod });
+        console.log('Date range:', { startDate, endDate, period: selectedPeriod });
         
         // Fetch stats with date range (only include dates if they're not null)
         const params = { period: selectedPeriod };
@@ -137,31 +137,51 @@ const AnalyticsPage = () => {
                 label = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
             } else {
                 label = item._id;
-            }
+            }        
         } else if (selectedPeriod === 'week') {
             // For weekly view, show day names
-            if (item._id.includes('-')) {
-                const date = new Date(item._id + 'T00:00:00');
-                label = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-            } else {
+            try {
+                const dateParts = item._id.split('-');
+                if (dateParts.length === 3) {
+                    const date = new Date(parseInt(dateParts[0]), parseInt(dateParts[1])-1, parseInt(dateParts[2]));
+                    label = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                } else {
+                    label = item._id;
+                }
+            } catch (error) {
+                console.error('Error formatting week date:', error);
                 label = item._id;
             }
         } else if (selectedPeriod === 'month') {
-            // For monthly view, show month names
             if (item._id.includes('-')) {
                 const date = new Date(item._id + '-01T00:00:00');
                 label = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
             } else {
                 label = item._id;
-            }
+            }        
         } else if (selectedPeriod === 'quarter') {
-            // For quarterly view, use the already formatted string from backend (e.g., "2024-Q1")
-            label = item._id;
+            // For quarterly view, make it more user-friendly
+            if (item._id.includes('-Q')) {
+                const parts = item._id.split('-Q');
+                const year = parts[0];
+                const quarter = parts[1];
+                
+                // Convert quarter number to a more readable format
+                const quarterNames = {
+                    '1': 'Jan-Mar',
+                    '2': 'Apr-Jun',
+                    '3': 'Jul-Sep',
+                    '4': 'Oct-Dec'
+                };
+                
+                label = `${quarterNames[quarter]} ${year}`;
+            } else {
+                label = item._id;
+            }
         } else if (selectedPeriod === 'year') {
             // For yearly view, show year
             label = item._id;
         } else {
-            // Fallback
             label = item._id;
         }
         

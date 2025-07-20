@@ -66,12 +66,10 @@ const transactionSchema = new mongoose.Schema({
   }
 });
 
-// Index for efficient querying
 transactionSchema.index({ userId: 1, date: -1 });
 transactionSchema.index({ userId: 1, type: 1 });
 transactionSchema.index({ userId: 1, category: 1 });
 
-// Update the updatedAt field before saving
 transactionSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();

@@ -138,15 +138,9 @@ const UploadReceiptPage = () => {
         const k = 1024;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];    };
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];    
+    };
     
-    // Debug: Log component state
-    console.log('UploadReceiptPage render - states:', {
-        selectedFile: !!selectedFile,
-        uploading,
-        uploadResult: !!uploadResult,
-        error: !!error
-    });
 
     // Error boundary protection
     try {
@@ -158,9 +152,10 @@ const UploadReceiptPage = () => {
             {/* Page Header */}
             <div className="bg-white shadow-sm">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center py-6">                        <Button
-                            variant="ghost"                            onClick={() => {
-                                console.log('Back button clicked - navigating to dashboard');
+                    <div className="flex items-center py-6">                        
+                        <Button
+                            variant="ghost"                            
+                            onClick={() => {
                                 try {
                                     // Clear any ongoing operations
                                     setUploading(false);
@@ -168,14 +163,9 @@ const UploadReceiptPage = () => {
                                     setUploadResult(null);
                                     setSelectedFile(null);
                                     
-                                    // Force clear any pending Redux operations by dispatching a reset action
-                                    // This helps prevent stuck loading states
-                                    
-                                    // Navigate with replace to avoid back button issues
                                     navigate('/dashboard', { replace: true });
                                 } catch (error) {
                                     console.error('Navigation error:', error);
-                                    // Fallback to hard navigation
                                     window.location.href = '/dashboard';
                                 }
                             }}
@@ -194,10 +184,8 @@ const UploadReceiptPage = () => {
                 </div>
             </div>
 
-            {/* Upload Section */}
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="space-y-6">
-                    {/* Upload Area */}
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center">
@@ -290,10 +278,11 @@ const UploadReceiptPage = () => {
                                 <p className="text-sm text-red-600 mt-2">{error}</p>
                             </CardContent>
                         </Card>
-                    )}                    {/* Upload Result */}
+                    )}                    
+                    
+                    {/* Upload Result */}
                     {uploadResult && (
                         <div className="space-y-4">
-                            {/* Success Message */}
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center text-green-600">
@@ -303,7 +292,6 @@ const UploadReceiptPage = () => {
                                 </CardHeader>
                             </Card>
 
-                            {/* Extracted Transaction Data */}
                             {uploadResult.parsedData && (
                                 <Card>
                                     <CardHeader>
@@ -364,25 +352,10 @@ const UploadReceiptPage = () => {
                                     </CardContent>
                                 </Card>
                             )}
-
-                            {/* Raw Extracted Text (Collapsible) */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-sm">Raw Extracted Text (Debug)</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <details className="group">
-                                        <summary className="cursor-pointer text-sm text-gray-600 hover:text-gray-800">
-                                            Click to show/hide raw extracted text
-                                        </summary>
-                                        <div className="mt-2 bg-gray-50 p-3 rounded text-xs font-mono max-h-60 overflow-y-auto whitespace-pre-wrap">
-                                            {uploadResult.extractedText || 'No text extracted'}
-                                        </div>
-                                    </details>
-                                </CardContent>
-                            </Card>
                         </div>
-                    )}                    {/* Instructions */}
+                    )}                    
+                    
+                    {/* Instructions */}
                     <Card>
                         <CardHeader>
                             <CardTitle>Tips for Better OCR Results</CardTitle>
@@ -391,24 +364,13 @@ const UploadReceiptPage = () => {
                             <div className="space-y-3 text-sm text-gray-600">
                                 <div className="flex items-start space-x-2">
                                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                                    <p>Ensure the receipt is well-lit and all text is clearly visible</p>
-                                </div>
-                                <div className="flex items-start space-x-2">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                                    <p>Take photos straight-on to avoid distortion and blurriness</p>
-                                </div>
-                                <div className="flex items-start space-x-2">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                                    <p>Higher resolution images (at least 1500px wide) work better</p>
-                                </div>
-                                <div className="flex items-start space-x-2">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                                     <p>PDFs often provide better text extraction results than images</p>
                                 </div>
                                 <div className="flex items-start space-x-2">
                                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                                     <p>The system tries multiple OCR configurations for best results</p>
-                                </div>                                <div className="flex items-start space-x-2">
+                                </div>                                
+                                <div className="flex items-start space-x-2">
                                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                                     <p>Review extracted data carefully before creating the transaction</p>
                                 </div>

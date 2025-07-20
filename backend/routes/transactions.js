@@ -101,7 +101,8 @@ router.use(protect);
 
 // Routes
 router.route('/')
-  .get(getTransactions)  .post(uploadSingle, handleUploadError, transactionValidation, createTransaction);
+  .get(getTransactions)  
+  .post(uploadSingle, handleUploadError, transactionValidation, createTransaction);
 
 router.get('/stats', protect, getTransactionStats);
 

@@ -1,5 +1,4 @@
 import { validationResult } from 'express-validator';
-import mongoose from 'mongoose';
 import fs from 'fs';
 import Transaction from '../models/Transaction.js';
 import { extractTextFromImage, extractTextFromPDF, parseReceiptText, deleteFile } from '../utils/fileProcessor.js';
@@ -266,7 +265,8 @@ export const uploadReceipt = async (req, res) => {
       // Parse the extracted text
       if (extractedText) {
         parsedData = parseReceiptText(extractedText);
-      }    } catch (error) {
+      }    
+    } catch (error) {
       console.error('Receipt processing error:', error);
       // Continue with file upload even if processing fails
     }
@@ -283,7 +283,6 @@ export const uploadReceipt = async (req, res) => {
   } catch (error) {
     console.error('Upload receipt error:', error);
     
-    // Clean up uploaded file on error
     if (req.file) {
       deleteFile(req.file.path);
     }
@@ -304,7 +303,6 @@ export const getTransactionStats = async (req, res) => {
     const userId = req.user._id;
     const query = { userId };
 
-    // Add date filtering if provided
     if (startDate && endDate) {
       query.date = {
         $gte: new Date(startDate),
@@ -337,12 +335,12 @@ export const getTransactionStats = async (req, res) => {
       { $sort: { total: -1 } }
     ]);        
     
-    // Time-based trends - adjust grouping based on period
+    // Time-based trends
     let timeGrouping;
     let sortStage;
     let addFieldsStage;
     
-    switch (period) {
+    switch (period) {      
       case 'week':
         timeGrouping = {
           year: { $year: '$date' },
@@ -353,13 +351,22 @@ export const getTransactionStats = async (req, res) => {
         addFieldsStage = {
           _id: {
             $dateToString: {
-              format: '%Y-%m-%d',
+              format: '%Y-%m-%d', 
               date: {
                 $dateFromParts: {
                   year: '$_id.year',
                   month: '$_id.month',
                   day: '$_id.day'
                 }
+              }
+            }
+          },
+          dayOfWeek: {
+            $dayOfWeek: {
+              $dateFromParts: {
+                year: '$_id.year',
+                month: '$_id.month',
+                day: '$_id.day'
               }
             }
           }
@@ -412,7 +419,6 @@ export const getTransactionStats = async (req, res) => {
         };
        break;
       default: 
-        // month
         timeGrouping = {
           year: { $year: '$date'},
           month: { $month: '$date'}
@@ -462,16 +468,6 @@ export const getTransactionStats = async (req, res) => {
       categoryStats: categoryStats || [],
       monthlyStats: timeStats || [] // Keep the same field name for compatibility
     };
-
-    // Debug logging for troubleshooting
-    console.log('Analytics Debug:', {
-      period,
-      query,
-      totalStatsCount: totalStats?.length || 0,
-      categoryStatsCount: categoryStats?.length || 0,
-      timeStatsCount: timeStats?.length || 0,
-      firstTimeEntry: timeStats?.[0] || null
-    });
  
     res.json({ 
       success: true,

@@ -98,9 +98,6 @@ const DashboardPage = () => {
                             <div className="text-2xl font-bold text-green-600">
                                 {formatCurrency(totalIncome)}
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                                +2.5% from last month
-                            </p>
                         </CardContent>
                     </Card>
 
@@ -113,9 +110,6 @@ const DashboardPage = () => {
                             <div className="text-2xl font-bold text-red-600">
                                 {formatCurrency(totalExpenses)}
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                                +12% from last month
-                            </p>
                         </CardContent>
                     </Card>
 
@@ -128,9 +122,6 @@ const DashboardPage = () => {
                             <div className={`text-2xl font-bold ${netBalance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                 {formatCurrency(netBalance)}
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                                {netBalance >= 0 ? 'Positive' : 'Negative'} balance
-                            </p>
                         </CardContent>
                     </Card>        
                 </div>
