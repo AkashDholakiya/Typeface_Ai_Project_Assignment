@@ -3,7 +3,6 @@ import fs from 'fs';
 import Transaction from '../models/Transaction.js';
 import { extractTextFromImage, extractTextFromPDF, parseReceiptText, deleteFile } from '../utils/fileProcessor.js';
 
-// Create new transaction
 export const createTransaction = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -18,7 +17,8 @@ export const createTransaction = async (req, res) => {
     const transactionData = {
       ...req.body,
       userId: req.user.id
-    };    // Handle file upload if present
+    };    
+    // Handle file upload if present
     if (req.file) {
       transactionData.receipt = {
         filename: req.file.filename,
@@ -28,6 +28,7 @@ export const createTransaction = async (req, res) => {
         mimetype: req.file.mimetype
       };
     } else if (req.body.receiptFilename) {
+
       // Handle receipt file that was previously uploaded
       const receiptPath = `uploads/${req.body.receiptFilename}`;
       if (fs.existsSync(receiptPath)) {
@@ -58,7 +59,6 @@ export const createTransaction = async (req, res) => {
   }
 };
 
-// Get all transactions with filtering and pagination
 export const getTransactions = async (req, res) => {
   try {
     const {
@@ -75,10 +75,8 @@ export const getTransactions = async (req, res) => {
       sortOrder = 'desc'
     } = req.query;
 
-    // Build query
     const query = { userId: req.user.id };
 
-    // Add search functionality
     if (search) {
       query.$or = [
         { description: { $regex: search, $options: 'i' } },
@@ -142,7 +140,6 @@ export const getTransactions = async (req, res) => {
   }
 };
 
-// Get transaction by ID
 export const getTransactionById = async (req, res) => {
   try {
     const transaction = await Transaction.findOne({
@@ -169,7 +166,6 @@ export const getTransactionById = async (req, res) => {
   }
 };
 
-// Update transaction
 export const updateTransaction = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -208,7 +204,6 @@ export const updateTransaction = async (req, res) => {
   }
 };
 
-// Delete transaction
 export const deleteTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOneAndDelete({
@@ -241,7 +236,6 @@ export const deleteTransaction = async (req, res) => {
   }
 };
 
-// Upload and process receipt
 export const uploadReceipt = async (req, res) => {
   try {
     if (!req.file) {
@@ -294,7 +288,6 @@ export const uploadReceipt = async (req, res) => {
   }
 };
 
-// Get transaction statistics
 export const getTransactionStats = async (req, res) => {
   try {
     const { startDate, endDate, period } = req.query;

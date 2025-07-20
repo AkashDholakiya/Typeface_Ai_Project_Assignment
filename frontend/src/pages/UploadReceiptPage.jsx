@@ -327,20 +327,6 @@ const UploadReceiptPage = () => {
                                             </div>
                                         </div>
 
-                                        {uploadResult.parsedData.items && uploadResult.parsedData.items.length > 0 && (
-                                            <div className="mt-4">
-                                                <label className="text-sm font-medium text-gray-700 mb-2 block">Detected Items</label>
-                                                <div className="bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
-                                                    {uploadResult.parsedData.items.map((item, index) => (
-                                                        <div key={index} className="flex justify-between py-1 text-sm">
-                                                            <span>{item.name}</span>
-                                                            <span className="font-medium">${item.amount.toFixed(2)}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
                                         <div className="flex justify-end space-x-3 mt-6">
                                             <Button variant="outline" onClick={() => navigate('/dashboard')}>
                                                 Done
